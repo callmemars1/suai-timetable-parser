@@ -19,7 +19,7 @@ lesson_number = class_result.find_all('h4')
 class_study = class_result.find_all('div', class_='study')
 chota = class_result.find('h3').find_next_sibling('h4').find_next_sibling().find_next()
 
-#
+
 # h3_tags = class_result.find_all('h3')
 # for index, h3 in enumerate(h3_tags):
 #     print("---------------------------------------------------------")
@@ -30,9 +30,9 @@ chota = class_result.find('h3').find_next_sibling('h4').find_next_sibling().find
 #         print(nex_el)
 #
 #         ###
-#
-#
-# # print(day)
-# # print(lesson_number)
-# # print(class_study)
-# # print(chota)
+
+
+# print(day)
+# print(lesson_number)
+# print(class_study)
+# print(chota)
