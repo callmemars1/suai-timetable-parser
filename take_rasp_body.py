@@ -24,7 +24,6 @@ class RaspBodyParser:
 
     def divide_by_days(self):
         days = []
-
         h3_tags = self.class_result.find_all('h3')
         for index, h3 in enumerate(h3_tags):
             day = [h3_tags[index]]
@@ -40,6 +39,12 @@ class RaspBodyParser:
                     day.append(nex_el)
             days.append(day)
         return days
+
+    def crt_dict(self):
+        days = self.divide_by_days()
+        days_dict = {}
+        for day in days:
+            day_dict = {}
 
 
 rasp_5038 = RaspBodyParser(TEST_URL)
