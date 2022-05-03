@@ -19,23 +19,25 @@ lesson_number = class_result.find_all('h4')
 class_study = class_result.find_all('div', class_='study')
 chota = class_result.find('h3').find_next_sibling('h4').find_next_sibling().find_next()
 
+days = []
 
 h3_tags = class_result.find_all('h3')
 for index, h3 in enumerate(h3_tags):
-    print("---------------------------------------------------------")
-    print(f'{h3_tags[index]=}')
+    day = []
+    day.append(h3_tags[index])
     if index + 1 < len(h3_tags):
         while h3.find_next_sibling() != h3_tags[index + 1]:
             nex_el = h3.find_next_sibling()
             h3 = nex_el
-            print(nex_el)
+            day.append(nex_el)
+            # print(nex_el)
     else:
         while h3.find_next_sibling() is not None:
             nex_el = h3.find_next_sibling()
             h3 = nex_el
-            print(nex_el)
+            # print(nex_el)
+            day.append(nex_el)
+    days.append(day)
 
-# print(day)
-# print(lesson_number)
-# print(class_study)
-# print(chota)
+for day in days:
+    print(day)
