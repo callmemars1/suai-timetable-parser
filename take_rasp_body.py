@@ -53,17 +53,45 @@ class RaspBodyParser:
                     time_lessons = []
                     lesson_time = string
                 else:
-                    time_lessons.append(string)
+                    time_lessons.append(self.expand_lesson(string) if isinstance(string, str) else string)
                     day_lessons[f'{lesson_time}'] = time_lessons
             rasp[f'{day_name}'] = day_lessons
         return rasp
 
-    def expand_lesson(self):
-        pass
+    @staticmethod
+    def expand_lesson(lesson: str) -> dict:
+        match = re.search(r'(.*)(Л|ПР|ЛР|КР)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)(Группы: '
+                          r'|Группа: )(.*)', lesson)
+
+        if match.group(1) == '':
+            week_type = 'верхняя и нижняя'
+        elif match.group(1) == '▲ ':
+            week_type = 'верхняя'
+        elif match.group(1) == '▼ ':
+            week_type = 'нижняя'
+        else:
+            week_type = 'неопределено'
+        # week_type = match.group(1)
+        lesson_type = match.group(2)
+        lesson_name = match.group(3)
+        building = match.group(4)
+        class_room = match.group(5)
+        teacher = match.group(7)
+        groups = re.findall(r'\d+', match.group(9))
+
+        expanded_lesson = {
+            'week_type': week_type,
+            'lesson_type': lesson_type,
+            'lesson_name': lesson_name,
+            'building': building,
+            'class_room': class_room,
+            'teacher': teacher,
+            'groups': groups,
+        }
+        return expanded_lesson
 
 
 if __name__ == '__main__':
-
     TEST_URL = 'https://rasp.guap.ru/?g=315'
     TABLE_PATH = 'result.json'
     rasp_5038 = RaspBodyParser(TEST_URL)
