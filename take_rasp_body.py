@@ -60,8 +60,8 @@ class RaspBodyParser:
 
     @staticmethod
     def expand_lesson(lesson: str) -> dict:
-        match = re.search(r'(.*)(ЛР|Л|ПР|КР)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)(Группы: '
-                          r'|Группа: )(.*)', lesson)
+        match = re.search(r'(.*)(ЛР|Л|ПР|КР|КП)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)('
+                          r'Группы: |Группа: )(.*)', lesson)
 
         if match.group(1) == '':
             week_type = 'верхняя и нижняя'
