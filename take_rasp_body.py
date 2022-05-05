@@ -60,7 +60,7 @@ class RaspBodyParser:
 
     @staticmethod
     def expand_lesson(lesson: str) -> dict:
-        match = re.search(r'(.*)(Л|ПР|ЛР|КР)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)(Группы: '
+        match = re.search(r'(.*)(ЛР|Л|ПР|КР)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)(Группы: '
                           r'|Группа: )(.*)', lesson)
 
         if match.group(1) == '':
