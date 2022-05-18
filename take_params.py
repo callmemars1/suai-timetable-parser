@@ -41,7 +41,7 @@ class RaspParamParser(Parser):
 
     @staticmethod
     def save_list(table, table_path, indent=2, ensure_ascii=False):
-        with open(table_path, 'w') as file:
+        with open(table_path, 'w', encoding='utf8') as file:
             json.dump(table, file, indent=indent, ensure_ascii=ensure_ascii)
 
 
