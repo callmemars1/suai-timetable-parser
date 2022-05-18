@@ -1,11 +1,10 @@
 from parser_class import Parser
-import logging
 import json
 import re
 
 
 class RaspParamParser(Parser):
-
+    """Loads the timetable params"""
     def __init__(self, url):
         super().__init__(url)
         self.g_param = self.soup.find('div', class_='form').find('select')

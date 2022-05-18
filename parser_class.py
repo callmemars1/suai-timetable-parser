@@ -3,7 +3,7 @@ import requests
 
 
 class Parser:
-
+    """Makes a request and creates a soup object"""
     def __init__(self, url):
         self.url = url
         self.request = self.get_request()

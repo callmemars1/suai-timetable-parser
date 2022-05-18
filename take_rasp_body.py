@@ -1,26 +1,14 @@
-from bs4 import BeautifulSoup as bs
-import requests
-import logging
 import json
 import re
+from parser_class import Parser
 
 
-class RaspBodyParser:
+class RaspBodyParser(Parser):
+    """Loads the timetable body"""
     def __init__(self, url):
-        self.url = url
-        self.request = self.get_request()
-        self.soup = bs(self.request.text, "html.parser")
+        super().__init__(url)
         self.class_result = self.soup.find('div', class_='result')
-        # self.group = re.search(r'\d+', self.class_result.find('h2').text).group(0)
         self.group = self.class_result.find('h2').text
-
-    def get_request(self):
-        try:
-            request = requests.get(self.url)
-            if request.status_code == 200:
-                return request
-        except:
-            print("Connection error")
 
     def divide_by_days(self):
         days = []
@@ -71,7 +59,6 @@ class RaspBodyParser:
             week_type = 'нижняя'
         else:
             week_type = 'неопределено'
-        # week_type = match.group(1)
         lesson_type = match.group(2)
         lesson_name = match.group(3)
         building = match.group(4)
