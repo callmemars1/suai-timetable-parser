@@ -1,6 +1,7 @@
 import json
 import re
 from parser_class import Parser
+from loguru import logger
 
 
 class RaspBodyParser(Parser):
@@ -99,7 +100,10 @@ class RaspBodyParser(Parser):
 if __name__ == '__main__':
     TEST_URL = 'https://rasp.guap.ru/?g=456'
     TABLE_PATH = 'result.json'
+    logger.info('start test parsing from ' + TEST_URL)
     rasp_5038 = RaspBodyParser(TEST_URL)
+    logger.info('parsing complete')
 
     with open(TABLE_PATH, 'w', encoding='utf8') as file:
         json.dump(rasp_5038.crt_dict(), file, indent=2, ensure_ascii=False)
+    logger.info('file saved to ' + TABLE_PATH)

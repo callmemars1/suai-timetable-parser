@@ -1,9 +1,14 @@
+import loguru
 from pymongo import MongoClient
 
 
 class RaspMongoClient:
     def __init__(self, connection_string: str, database: str, collection: str):
-        self.client = MongoClient(connection_string)
+        try:
+            self.client = MongoClient(connection_string)
+        except Exception as _ex:
+            loguru.logger.warning('connection with mangoDB failed')
+            loguru.logger.warning(_ex)
         self.collection = self.client[database][collection]
 
     def disconnect(self):
