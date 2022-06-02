@@ -30,34 +30,47 @@ class RaspBodyParser(Parser):
 
     def crt_dict(self):
         days = self.divide_by_days()
-        rasp = {'Группа': self.group}
+        lessons = []
+
         for day in days:
             day_name = day[0]
-            day_lessons = {}
-            lesson_time = 'Ошибка определения времени'
-            time_lessons = []
+            start_time = ''
+            end_time = ''
+            lesson_number = ''
             for string in day[1:]:
-                if 'пара (' in string or 'вне сетки' in string:
-                    time_lessons = []
-                    lesson_time = string
+                if 'пара (' in string:
+                    match = re.search(r'(.*) пара \((.*)–(.*)\)', string)
+                    lesson_number = match.group(1)
+                    start_time = match.group(2)
+                    end_time = match.group(3)
+                elif 'вне сетки' in string:
+                    start_time = ''
+                    end_time = ''
+                    lesson_number = 'Вне сетки расписания'
                 else:
-                    time_lessons.append(self.expand_lesson(string) if isinstance(string, str) else string)
-                    day_lessons[f'{lesson_time}'] = time_lessons
-            rasp[f'{day_name}'] = day_lessons
-        return rasp
+                    time_lessons = self.expand_lesson(string) if isinstance(string, str) else string
+                    lesson = {
+                        'week_day': day_name,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'lesson_number': lesson_number
+                    }
+                    lesson.update(time_lessons)
+                    lessons.append(lesson)
+        return lessons
 
     @staticmethod
     def expand_lesson(lesson: str) -> dict:
         match = re.search(r'(.*)(ЛР|Л|ПР|КР|КП)\W*(.*)  \W*(.*), ауд. (.*)(Группы: |Группа: )(.*)', lesson)
 
         if match.group(1) == '':
-            week_type = 'верхняя и нижняя'
+            week_type = ['верхняя', 'нижняя']
         elif match.group(1) == '▲ ':
-            week_type = 'верхняя'
+            week_type = ['верхняя']
         elif match.group(1) == '▼ ':
-            week_type = 'нижняя'
+            week_type = ['нижняя']
         else:
-            week_type = 'неопределено'
+            week_type = ['неопределено']
         lesson_type = match.group(2)
         lesson_name = match.group(3)
         building = match.group(4)
@@ -72,12 +85,12 @@ class RaspBodyParser(Parser):
         groups = re.findall(r'\w+', match.group(7))
 
         expanded_lesson = {
-            'week_type': week_type,
+            'week_types': week_type,
             'lesson_type': lesson_type,
             'lesson_name': lesson_name,
             'building': building,
-            'class_room': class_room,
-            'teacher': teachers,
+            'class_rooms': class_room,
+            'teachers': teachers,
             'groups': groups,
         }
         return expanded_lesson
