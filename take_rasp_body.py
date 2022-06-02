@@ -8,7 +8,7 @@ class RaspBodyParser(Parser):
     def __init__(self, url):
         super().__init__(url)
         self.class_result = self.soup.find('div', class_='result')
-        self.group = self.class_result.find('h2').text
+        self.group = re.search(r'(\w+) - (.*)', self.class_result.find('h2').text).group(2)
 
     def divide_by_days(self):
         days = []
@@ -48,8 +48,7 @@ class RaspBodyParser(Parser):
 
     @staticmethod
     def expand_lesson(lesson: str) -> dict:
-        match = re.search(r'(.*)(ЛР|Л|ПР|КР|КП)\W*(.*)  \W*(.*), ауд. (.*)(Преподаватель: |на базе кафедры )(.*)('
-                          r'Группы: |Группа: )(.*)', lesson)
+        match = re.search(r'(.*)(ЛР|Л|ПР|КР|КП)\W*(.*)  \W*(.*), ауд. (.*)(Группы: |Группа: )(.*)', lesson)
 
         if match.group(1) == '':
             week_type = 'верхняя и нижняя'
@@ -62,9 +61,15 @@ class RaspBodyParser(Parser):
         lesson_type = match.group(2)
         lesson_name = match.group(3)
         building = match.group(4)
-        class_room = match.group(5)
-        teacher = match.group(7)
-        groups = re.findall(r'\d+', match.group(9))
+        class_room_and_teacher = match.group(5)
+        if ':' in class_room_and_teacher:
+            match2 = re.search(r'(.*)(Преподаватель: |на базе кафедры |Преподаватели: )(.*)', class_room_and_teacher)
+            class_room = [room.strip() for room in match2.group(1).split(sep=';')]
+            teachers = [teacher.strip() for teacher in match2.group(3).split(sep=';')]
+        else:
+            class_room = [room.strip() for room in match.group(5).split(sep=';')]
+            teachers = ['']
+        groups = re.findall(r'\w+', match.group(7))
 
         expanded_lesson = {
             'week_type': week_type,
@@ -72,14 +77,14 @@ class RaspBodyParser(Parser):
             'lesson_name': lesson_name,
             'building': building,
             'class_room': class_room,
-            'teacher': teacher,
+            'teacher': teachers,
             'groups': groups,
         }
         return expanded_lesson
 
 
 if __name__ == '__main__':
-    TEST_URL = 'https://rasp.guap.ru/?g=315'
+    TEST_URL = 'https://rasp.guap.ru/?g=456'
     TABLE_PATH = 'result.json'
     rasp_5038 = RaspBodyParser(TEST_URL)
 
