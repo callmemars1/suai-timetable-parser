@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 test.py
+result.json
+config.py
+save_data.py
