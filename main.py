@@ -6,6 +6,7 @@ from loguru import logger
 from rasp_mongo_client import RaspMongoClient
 import os
 from dotenv import load_dotenv
+import sched, time
 
 TABLE_PATH = 'full_result.json'
 
@@ -61,4 +62,25 @@ def main():
 
 
 if __name__ == '__main__':
+
+    try:
+        load_dotenv('.env')
+        logger.info('use .env')
+    except Exception:
+        pass
+
+    logger.add('debug.log', format="{time} {level} {message}", level='DEBUG', rotation='10 KB')
+    logger.info('start first parsing')
     main()
+
+    period_in_sec = float(os.environ["TIME_SPAN"])
+    logger.info(f'timer set on:{period_in_sec}sec.')
+    s = sched.scheduler(time.time, time.sleep)
+
+    def do_something(sc):
+        logger.info(f"its time to parsing, next parsing in {period_in_sec} seconds ")
+        main()
+        sc.enter(period_in_sec, 1, do_something, (sc,))
+
+    s.enter(period_in_sec, 1, do_something, (s,))
+    s.run()
