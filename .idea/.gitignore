@@ -1,3 +1,6 @@
+# Default ignored files
+/shelf/
+/workspace.xml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,8 +130,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-test.py
-result.json
-config.py
-upload_manager.py
