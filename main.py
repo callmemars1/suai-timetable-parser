@@ -14,12 +14,6 @@ TABLE_PATH = 'full_result.json'
 def main():
     logger.info('!suai-timetable-parser START work!')
 
-    try:
-        load_dotenv('.env')
-        logger.info('use .env')
-    except Exception:
-        pass
-
     logger.info('started connecting with mangoDB')
 
     # bd = RaspMongoClient(f'mongodb://localhost:27017/',
