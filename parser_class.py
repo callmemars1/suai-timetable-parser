@@ -12,10 +12,8 @@ class Parser:
 
     def get_request(self):
         try:
-            logger.info('parser try to get request')
             request = requests.get(self.url)
             if request.status_code == 200:
-                logger.info('request.status_code == 200')
                 return request
         except Exception as _ex:
-            logger.warning("Connection error", _ex)
+            logger.warning(f"Connection error, cant  requests.get({self.url})", _ex)

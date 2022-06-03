@@ -1,12 +1,16 @@
 from parser_class import Parser
 import json
 import re
+from loguru import logger
 
 
 class RaspParamParser(Parser):
     """Loads the timetable params"""
+
     def __init__(self, url):
         super().__init__(url)
+
+        self.actual_week = 'верхняя' if (re.search(r'(▼|▲)', self.soup.find('em', class_='dn').text).group(1)) == '▲' else 'нижняя'
         self.g_param = self.soup.find('div', class_='form').find('select')
         self.p_param = self.g_param.find_next('select')
         self.b_param = self.p_param.find_next('select')
@@ -15,6 +19,7 @@ class RaspParamParser(Parser):
         self.p_param_table = self.unpack_param(self.p_param)
         self.b_param_table = self.unpack_param(self.b_param)
         self.r_param_table = self.unpack_param(self.r_param)
+
 
     @staticmethod
     def unpack_param(string):
@@ -46,7 +51,7 @@ class RaspParamParser(Parser):
 
 if __name__ == '__main__':
     parser = RaspParamParser('https://rasp.guap.ru/')
-
+    logger.info(f'{parser.actual_week}')
     parser.save_list(parser.g_param_table, 'g_param_table.json')
     parser.save_list(parser.p_param_table, 'p_param_table.json')
     parser.save_list(parser.b_param_table, 'b_param_table.json')
